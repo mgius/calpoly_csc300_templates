@@ -1,0 +1,23 @@
+\begin{thebibliography}{1}
+
+\bibitem{4595934}
+S.~Al-Kiswany, M.~Ripeanu, S.S. Vazhkudai, and A.~Gharaibeh.
+\newblock stdchk: A checkpoint storage system for desktop grid computing.
+\newblock In {\em Distributed Computing Systems, 2008. ICDCS '08. The 28th
+  International Conference on}, pages 613 --624, 17-20 2008.
+
+\bibitem{1520898}
+H.S. Kim and H.Y. Yeom.
+\newblock A user-transparent recoverable file system for distributed computing
+  environment.
+\newblock In {\em Challenges of Large Applications in Distributed Environments,
+  2005. CLADE 2005. Proceedings}, pages 45 -- 53, 24 2005.
+
+\bibitem{5350011}
+R.~Schwarzkopf, M.~Schmidt, N.~Fallenbeck, and B.~Freisleben.
+\newblock Multi-layered virtual machines for security updates in grid
+  environments.
+\newblock In {\em Software Engineering and Advanced Applications, 2009. SEAA
+  '09. 35th Euromicro Conference on}, pages 563 --570, 27-29 2009.
+
+\end{thebibliography}

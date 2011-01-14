@@ -1,0 +1,245 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage} % does reasonable things
+\usepackage{setspace} % allows double spacing
+
+\begin{document}
+\title{``Frozen'' Linux}
+\author{Mark Gius \\
+        CPE456, Section 01}
+\date{\today}
+\maketitle
+
+\begin{abstract}
+When maintaining a fleet of public use personal computers, the systems
+administrator is faced with the task of trying to protect the fleet from 
+all manner of threats, ranging from the accidental to the malicious.  
+The protective mechanism often takes the form of restricted or reduced 
+access, preventing damage by forbidding access to dangerous functions.
+This mechanism has a negative effect when a user attempts to use the system
+in a manner that was not predicted by the systems administrator.
+I propose a system that would allow the systems administrator to maintain
+an acceptable level of control over the stability of the public fleet,
+while still allowing users to configure and install the software that they
+need.
+\end{abstract}
+
+\newpage
+\doublespacing
+\section{Introduction}
+% TODO: Consistency among terms
+The average computer user lacks the knowledge or will to safely maintain 
+a general use personal computer.  The threats facing users today include 
+self-inflicted damage such as accidental deletion and misconfiguration of the 
+operating system or other programs, as well as the numerous types of malware
+and other unwanted applications that are common today.
+
+This problem is further multiplied in the case of public access computers, 
+such as internet kiosks or laptop check-out stations.  In this case, not 
+only are the users generally incapable of keeping themselves safe, they have
+little to no motivation to protect assets which are not their responsibility.
+In these scenarios, the public systems are often configured to disallow 
+``unsafe'' actions, such as installing software, system configuration, and
+installing hardware.
+
+The locked down nature of these public machines has consequences, however.
+Sometimes users intend to use these public or borrowed systems for purposes
+that the administrator had not anticipated.  While most users use the public
+systems for web browsing, an up-and-coming musician may want to save money by
+checking out a laptop every week to record music.  The musician will need a
+number of software and hardware settings that are not common.  Ordinarily, this
+use case would be unsupported, due to being configured in a
+``least-priviledge'' mode.  However, if it were possible to quickly and easily
+revert changes made by the users, it would be reasonable to allow any user full
+administrative priviledges over the checked out or public machine.  In this
+way, the musician can use public resources exactly how he wishes, and the
+technicians running the shared laptop program can trivially restore the laptops
+to a known good state.
+
+I set out to create a system whereby systems with administrative access enabled
+can be provided to well-meaning users with advanced needs, without compromising
+the long-term integrity of the shared systems. 
+
+\section{Possible Implementations}
+There are many possible avenues for implementing such a system.
+
+One possibility is to distribute systems that boot from Linux LiveCDs, instead
+of the local hard disk.  This option has a number of drawbacks which make it a
+poor choice for the aspiring musician. For one, LiveCDs save all temporary
+changes to an in-RAM filesystem, limiting the amount of usable space to do
+work.  In the case of the musician, the music editing software (both on disk
+and the running memory usage) and the recorded music files will all share
+the same limited amount of space.  Without significant quantities of RAM, the
+machines would not be usable by certain classes of users.
+
+Another solution could keep a known good state on disk, with the ability to
+intiate a ``re-image'' process to restore the system to a known-good state.
+This would meet the requirements of our musician, but restoring the system
+to a known-good state would be non-trivial and potentially time-consuming 
+depending on the size of the disks.  Ideally, our system would support 
+instant (or nearly so) reversion, in a manner that was trivial for a user
+or administrator to initiate.
+
+A better solution uses a modified form of the filesystem that most Linux 
+LiveCDs present. Normally, a LiveCD merges its known-good CD filesystem 
+with an in-RAM filesystem. To make this solution work, rather than 
+merging the known good filesystem with an in-RAM filesystem, we would 
+merge the known good filesystem with another on-disk filesystem.  We would
+then have to ensure that the second on-disk filesystem is properly reset 
+at an appropriate time, such as on every system boot.
+
+\section{Implementation}
+
+As we have seen, there are a number of avenues by which we can implement this 
+system.  In accordance with the scope of this project, I elected to pursue
+a userspace implementation, using standard linux filesystems and AUFS, a
+union filesystem, to protect the system against all changes.
+
+The basic idea is that a real root device and an empty filesystem would be
+merged using AUFS, with the blank ``scratch'' disk mount on top of the real
+root disk.  AUFS would consider the real root filesystem to be a read-only
+branch of the merged filesystem, and all modifications to the merged filesystem
+would be written to the top-level ``scratch'' disk. On boot, the data on the
+scratch disk would be thrown away, and a new blank scratch disk would be merged
+with the real root filesystem.
+
+The behavior that the user would see is a fresh, consistent system on every
+reboot, no matter what happens between boots.
+
+\subsection{The ``Scratch'' Disk}
+When choosing the filesystem for the ``scratch disk'', or the filesystem that
+is mounted ``over'' the real root filesystem, I looked into two broad
+categories.  The first were traditional linux filesystems, such as ext3 and
+JFS, and the second were snapshotting filesystems, such as nilfs2.  
+
+I investigated the nilfs filesystem as a possible avenue for the scratch disk,
+hoping to use it's snapshotting and checkpoint features to allow an
+administrator to easily modify the current state of the system without
+significant effort.  With a snapshotting filesystem, an administrator could
+make changes or updates to the system then create a snapshot.  The boot-time
+reversion, instead of wiping away all the data on the filesystem, would simply
+revert to the lastest snapshot.
+
+Unfortunately, nilfs does not support this kind of reversion.  While nilfs does
+support checkpoints and snapshots, as well as mounting those intermediate
+points, it does not support read-write mounting of snapshots.  Even worse, when
+snapshots and checkpoints are deleted, the current state of the filesystem is
+unchanged, only the intermediate points are expunged from the filesystem. As a
+result, nilfs offered no advantages over a traditional filesystem, and I
+decided not to use it.
+
+In the end, I chose JFS as my overlaid filesystem.  Based on my previous
+experiences with Linux filesystems, I chose JFS because of its general speed,
+especially in regard to large files, and its speed in formatting.  JFS
+filesystems, even with extremely large disks of 1TB or more, format in a time
+on the order of seconds.  Because the scratch disk will be reformatted after
+every reboot, I felt that minimizing the amount of time necessary for each
+reboot would be beneficial.
+
+\subsection{Kernel and Initial Ram Disk}
+
+Initially, I had hoped to use a stock Ubuntu kernel.  After some
+experimentation I decided to compile my own kernel, even though the Ubuntu
+kernel supports the AUFS filesystem.  The two compelling factors for compiling
+my own kernel were filesystem support and userspace tools support.  The stock
+Ubuntu kernel has support for JFS, but it is compiled as a module.  In order to
+mount filesystems as a root filesystem, support for the filesystem must be
+compiled directly into the kernel.
+
+Ubuntu, like many Linux distributions, uses AUFS to build their Live CDs, but
+don't include the userspace tools in their repositories.  Because the mainline
+kernel (Linus Torvalds' tree) does not include any union filesystems, any
+distribution using the AUFS code has applied patches directly to their source.
+Ideally, I would match the AUFS userspace tools version to the AUFS version
+applied to the kernel.  Rather than parse through the myriad of patches applied
+to the Ubuntu kernel to find the correct version of AUFS to download, I opted
+instead to download the latest version of the AUFS kernel and AUFS userspace
+tools from the project webpage.\footnote{http://aufs.sourceforge.net/}.  
+
+No modifications were made to the source of the AUFS enabled kernel, although
+many features and drivers were disabled to speed up the compilation of the 
+kernel.  
+
+The initial ram disk (initrd) was modified slightly to change the behavior of mounting
+the root filesystem.  The JFS filesystem format binary was added to the 
+initrd to support reformatting the filesystem after every boot, and the 
+script which is responsible for mounting the root filesystem was modified.
+
+The original behavior of the root mounting script was to mount the root
+filesystem in a particular location.  I added several lines which format the
+scratch disk, mount the real root and scratch disk in temporary locations, then
+union mount those two filesystems using AUFS in the location that the script
+would normally place the real root filesystem.  The result of these
+interactions is that the root filesystem that the initrd eventually hands off
+to the system's init is the merged AUFS filesystem.
+
+% TODO: more here?
+
+\subsection{Known Vulnerabilities}
+While this implementation is very effective against accidental damages to
+the system, it does not hold up well against a concerted attack. There are two
+primary methods by which an attacker could easily circumvent the protections
+offered and create persistent changes to the system. For all of these attacks,
+it is assumed that the attacker has obtained root privileges.
+
+The first involves manipulating the disk block devices directly. 
+Under normal circumstances, special files representing disks and partitions
+are exposed to the user via the ``devfs'' special filesystem.  Because these 
+block devices represent a lower level interface than that of the AUFS mounted
+filesystem it is possible to read and write to the block devices directly, 
+completely bypassing the protection offered by the AUFS union.
+
+Using this vulnerability, an attacker could attempt to mount the real root
+filesystem in a temporary folder and modify the contents there.  This attack 
+is nontrivial, primarily because the Linux kernel will not normally mount
+a filesystem twice.  Although there are mount options that allow you to 
+``mount'' a filesystem in multiple locations (bind, remount), 
+these options require access to theactual mount point of the filesystem to 
+be multiply mounted. Because the true mount point of the root filesystem is
+not visible after the initial ram disk calls init it becomes much harder to
+exploit this vulnerability in this manner, although by no means impossible.
+
+Another exploit of this vulnerability involves duplicating the filesystem on
+the disk using the \emph{dd} command.  After mounting the duplicated system and
+making modifications, the attacker could then write the modified filesystem
+back to disk.  While I have been unable to exploit this vulnerability myself
+(it often leaves the filesystem in a dirty or unmountable state), a dedicated
+attacker could eventually develop a technique for reliably exploiting this
+vulnerability.
+
+The second vulnerability revolves around the boot loader.  By default, the 
+GRUB boot loader does not have a password, and allows users to edit the boot
+loader options.  Because the implementation relies upon a specific initrd
+to set up the AUFS filesystem, an attacker could specify another initrd 
+that doesn't protect the filesystem.  This attack could be mitigated by 
+adding a password to the boot loader, and only leaving the AUFS mounting 
+initrd's on the filesystem.
+
+The third vulnerability is that there are no checks to verify that the root
+filesystem is unchanged.  Using this knowledge, an attacker could boot the 
+system using a Linux LiveCD and modify the root filesystem from there.  
+This vulnerability could be mitigated by disallowing booting from media other 
+than the local disk, and storing the protected in a monitored environment. 
+The system could also be modified to verify that the last mount event 
+was performed at the right time and by the right system, although such a check
+would be easily fooled by a well crafted attack.  
+
+\section{Future Improvements}
+One significant improvement that could be made would be to use a snapshotting
+filesystem that supports reversion, instead of JFS.  None of the snapshotting
+filesystems that I tested supported this functionality, but the behavior could
+likely be patched in. By doing this, the administrator could create a new
+default snapshot that would be reverted to after each reboot.  
+
+Another option would be to implement the entire system as a kernel block
+device.  Instead of using a union at the filesystem level, the union would
+occur between two devices.  This would improve security dramatically, as the
+unioned block device would be presented through \emph{devfs} instead of the
+real block devices, and the merged block devices could be removed.
+
+\nocite{5350011,1520898,4595934}
+\newpage
+
+\bibliographystyle{plain}
+\bibliography{final_paper}
+\end{document}

@@ -1,0 +1,49 @@
+The system is a low-powered Atom PC, small form factor (it's less than 12" on each side, and about 3" tall), with a 320GB hard drive and 2GB of ram.  The system is located in my bedroom in a house in San Luis Obispo, on top of another computer.  It is plugged into a surge protector, but not a UPS.  The system has no input devices plugged into it (keyboard, mouse, webcam, etc).  
+
+The system is connect to the internet via a switch in my bedroom that is shared with several other desktops. The bedroom switch connects to a shared house switch via a cable that runs along the floor of the hallway leading to my bedroom.  The shared workgroup switch has connects to a Linksys router running DD-WRT (linux), connected to a DSL modem (local ATT affiliate ISP). 
+
+Threat: Computer's network is shared amongst several untrustworthy computers (personal windows machines of roommates)
+
+Goals Violated: Confidentiality - Data in transit can be snooped.
+                Availablity - Malicious or incompetent roommates can use all
+                              available resources.
+
+Vulnerability:  Network on which computer is located is untrusted.
+
+Controls:       Almost all traffic to/from machine is via encrypted methods 
+                (HTTPS, SSH).  All non-encrypted traffic is intended to be
+                publically accessible. All management functions are conducted
+                via encrypted channels.
+
+                Availability - Reasonably sane QoS policies on router reduce
+                               downtime.
+
+Threat: Public facing openSSH could allow access via compromised account
+
+Goals Violated: confidentiality - Compromised accounts could grant information
+                                  to unathorized persons.  
+                Availibility    - Compromised accounts could consume system
+                                  resources or damage services
+                Integrity       - compromised accounts could modify system 
+                                  configurations and data.
+
+Vulnerability: A user account with a bad password could become compromised and 
+               allow unathorized access to the system
+
+Controls:      General: OpenSSH is configured to disallow remote "root" login.
+                        "sshblackd" script monitors for repeated failed logins
+                        (password cracking bots) and adds IPs to a "banned"
+                        list (iptables filter)
+                        All admin accounts have reasonably secure passwords
+               Confidentiality: Sensitive data is not publically readable 
+                                via file system permissions.
+
+Threat: Power outage
+
+Threat: Compromised Home Router
+
+Threat: Theft
+
+Threat: Tapped Network cables
+
+Threat:  

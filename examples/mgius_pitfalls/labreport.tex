@@ -1,0 +1,40 @@
+\documentclass[11pt]{article}
+
+% Use wide margins, but not quite so wide as fullpage.sty
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth 6in \textheight 8 in
+% That's about enough definitions
+
+\begin{document}
+\author{Your Name Here}
+\title{Lab 1: Security Audit}
+\maketitle
+
+\section{Text formatting}
+
+% Quoting in LaTeX is sometimes a little funny. 
+% See http://en.wikibooks.org/wiki/LaTeX/Formatting#Quotes for more info
+
+You cannot use \verb+"+ to achieve double quotes, you must use the left tick
+and the right tick instead.  
+
+\verb+This is a ``double quoted'' entry+
+
+is converted to 
+
+This is a ``double quoted'' entry.
+
+\verb+This is a `single quoted' entry+
+
+is converted to
+
+This is a `single quoted' entry
+
+This behavior is difficult to see in a compiled tex document, check out the 
+source.
+
+\end{document}

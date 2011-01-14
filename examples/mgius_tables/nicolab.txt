@@ -1,0 +1,27 @@
+\begin{tabular}{|c|p{4.2in}|}\hline
+\bf Threat         & Computer could be stolen and data lost. \\\hline
+\bf Goals Violated &
+       \begin{tabular}{rp{3in}}
+       Confidentiality: & Confidential personally
+                               identifiable information could be exposed to the
+                               thief \\
+       Availability: & Student grade data would be unavailable to
+                               instructor.\\ \end{tabular} \\\hline
+\bf Vulnerability  & Laptops are small, portable, and easily stolen. \\\hline
+\bf Controls &
+       \begin{tabular}{rp{3in}}
+       General: & Laptop is never left unattended and is always stored
+                    in a locked office.
+                       \\
+       Confidentiality: &
+                                Personally identifiable information is stored in
+                               encrypted form, and the password
+                                is not stored on the same machine.\\
+       Availability:    &
+                                All grading information is replicated on another
+                                host for safekeeping.  Losses will be limited to
+                                the time between the last backup and the theft.
+                                 \\
+       \end{tabular}\\\hline
+\end{tabular}\par
+
