@@ -4,7 +4,7 @@ The easiest way to use this repository is to clone it using Git.  Git is
 available on every major platform.  These instructions work on Vogon, and
 should work on any system with git installed.
 
- <git clone git://github.com/mgius/calpoly_csc300_templates.git>
+    git clone git://github.com/mgius/calpoly_csc300_templates.git
 
 This should provide you with an exact copy of the repository.  You can choose
 to use Git at this point, or you can copy the files elsewhere and use them.
