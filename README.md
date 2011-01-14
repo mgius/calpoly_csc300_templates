@@ -19,6 +19,9 @@ selecting "raw". I highly reccomend using git, however.
 
 I would love more examples.  Fork this repository (preferably by signing up for
 github and forking it that way), add your examples and send me a pull request.
-If you are opposed to that idea, I'll take git patches as well.
+If you are opposed to that idea, I'll take git patches as well.  Pleas test
+your example on vogon before submitting it, or note that it requires a newer
+version than vogon if it cannot compile on vogon.
 
-Before submitting your examples, please take a moment to add a header comment (like the ones I've added) and any other notes that you think would be helpful
+Before submitting your examples, please take a moment to add a header comment
+(like the ones I've added) and any other notes that you think would be helpful.
