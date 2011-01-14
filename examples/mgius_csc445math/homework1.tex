@@ -1,0 +1,181 @@
+\documentclass[11pt]{article}
+% decent example of doing mathematics and proofs in LaTeX.
+% An Incredible degree of information can be found at
+% http://en.wikibooks.org/wiki/LaTeX/Mathematics
+
+% Use wide margins, but not quite so wide as fullpage.sty
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth 6in \textheight 8 in
+% That's about enough definitions
+
+\usepackage{amsmath}
+\usepackage{upgreek}
+
+\begin{document}
+\author{Mark Gius}
+\title{Homework Set 1: 141 Redux}
+\maketitle
+
+\begin{enumerate}
+
+\item % Problem 1: 
+
+Prove that:
+% starts math environment, multiline
+\[
+1^2 + 2^2 + \cdots + n^2 = \frac{n(n+1)(2n+1)}{6}
+\]
+
+Using Proof by Induction.
+
+First, prove that for some n, this equation holds true.
+
+% starts math environment with alignment on a particular pivot.  The pivot is
+% denoted by '&' on each line
+\begin{align*}
+n = 2
+1^2 + 2^2 & = \frac{2(2+1)(4+1)}{6} \\
+2 + 4 & = \frac{2(3)(5)}{6} \\
+6 &= \frac{30}{6} \\
+6 &= 6
+\end{align*}
+
+Now, prove that this works for any n+1.
+
+\begin{align*}
+1^2 + 2^2 + \cdots + n^2 & = \frac{n(n+1)(2n+1)}{6} \\
+1^2 + 2^2 + \cdots + n^2 + (n+1)^ 2 & = \frac{(n+1)(n+2)(2n+3)}{6} \\
+\intertext{Notice that the n+1 equation contains the n equation.}
+\boxed{1^2 + 2^2 + \cdots + n^2 } + (n+1)^ 2 & = \frac{(n+1)(n+2)(2n+3)}{6} \\
+\frac{n(n+1)(2n+1)}{6} + (n+1)^2 & = \frac{(n+1)(n+2)(2n+3)}{6} \\
+n(n+1)(2n+1) + 6(n+1)^2 & = (n+1)(n+2)(2n+3) \\
+n(2n+1) + 6(n+1) & = (n+2)(2n+3) \\
+2n^2 + n + 6n + 6 & = 2n^2 + 4n + 3n + 6 \\
+2n^2 + 7n + 6 &= 2n^2 + 7n + 6 \\
+\intertext{therefore}
+1^2 + 2^2 + \cdots + n^2 & = \frac{n(n+1)(2n+1)}{6}
+\end{align*}
+
+\item % Problem 2
+Prove that
+
+\[
+6 \mid n^3 - n
+\]
+
+Using Proof by Induction.
+
+First prove that this equation is valid for an arbitrary n.
+
+\begin{align*}
+n & = 2 \\
+6 & \mid 2^3 - 2 \\
+6 & \mid 6
+\end{align*}
+
+Now, prove for any n+1
+
+\begin{align*}
+6 & \mid (n+1)^3 - (n+1) \\
+6 & \mid n^3 + 3n^2 + 3n + 1 - n - 1 \\
+6 & \mid n^3 + 3n^2 + 3n - n \\
+\intertext{I can pull the original equation out of this one}
+6 & \mid \boxed{n^3 - n} + 3n^2 + 3n \\
+\intertext{Now I need to prove that $3n^2 + 3n$ is divisible by 6}
+6 & \mid 3n^2 + 3n \\
+6 & \mid 3(n^2 + n) \\
+2 & \mid n^2 + n \\ 
+\end{align*}
+% this line contains a snippet of math.  Rather than owning its own line, this 
+% math equation is integrated in into the surrounding text.
+Now I need to prove that $n^2 + n$ is divisible by 2, or even 
+
+Let n be even. By our proof in class today (seen in one form in problem 3),
+$n^2$ is even when $n$ is even.  An even number added to an even number is even.
+
+Let n be odd. By the same proof, $n^2$ is odd when $n$ is odd. An odd number
+added to an odd number is an even number. Therefore, $n^2 + n$ is an even
+number. 
+
+Therefore, $6 \mid (n+1)^3 - (n+1)$.
+
+\item % Problem 3
+Prove that $\sqrt[3]{2}$ is an irrational number
+
+Assume that $\sqrt[3]{2}$ is a rational number.  If so, then
+\begin{align*}
+\sqrt[3]{2} = \frac{a}{b} & != 0 \\
+\intertext{\em{where a,b have no common factors}}
+% this command embeds normal text in a math context.  Very useful.
+a^3 & = b\sqrt[3]{2} \\
+a^3 & = 2b^3 
+\intertext{We now know that $a^3$ is even. It would be helpful is a was even.}
+\intertext{Let $a^3$ be even, prove that a is even}
+a^3 & = 2k \\
+a & = \sqrt[3]{2k} \\
+a & = \sqrt[3]{2} \sqrt[3]{k} \\
+\intertext{Blech...lets try again with the contrapositive.}
+% and here I'm embedding normal text with a math snippet in it.
+\intertext{Assume that a is odd, prove $a^3$ is odd.}
+a & = 2k + 1 \\
+a^3 & = 8k^3 + 12k^2 + 6k + 1 \\
+a^3 & = 2(4k^3 + 6k^2 + 3k) + 1 \\
+\intertext{$a^3$ is odd, therefore if $a^3$ is even, a is even.  Now back.}
+a^3 & = 2b^3 \\
+(2L)^3 & = 2b^3 \\
+8L^3 & = 2b^3 \\
+4L^3 & = b^3 \\
+2(2L^3) & = b^3 \\
+\intertext{By the same proof as above, $b$ must be even because $b^3$ is even.
+Now, a and b share the common factor of two, therefore, $\sqrt[3]{2}$ is not
+rational, and therefore irrational.}
+\end{align*}
+\item % Problem 4
+Given G(V,E), we know that $\sum_{1}^{n} \mid d_i = 2e$. Prove
+\[
+e \leq \frac{n(n-1)}{2}
+\]
+
+\begin{align*}
+\intertext{Base case $n=2$, a graph with two vertices has 1 edge.}
+e & = 1 \\
+e & \leq \frac{2(2-1)}{2} \\
+1 & \leq 1 \\
+\intertext{Now prove the $n+1$ option. When the $n+1$ vertice is added, it can
+add up to $n$ edges, one for each of the existing vertices.}
+e + n & \leq \frac{(n+1)n}{2} \\
+e + n & \leq \frac{n^2 + n}{2} \\
+e + n & \leq \frac{n^2 + n + n - n}{2} \\
+e + n & \leq \frac{n^2 - n}{2} + \frac{2n}{2} \\
+e + n & \leq \boxed{\frac{n(n-1)}{2}} + n \\
+\intertext{Therefore, by induction:}
+e & \leq \frac{n(n-1)}{2}
+\end{align*}
+
+\item % Problem 5
+
+Show that every graph with two or more nodes contains two nodes that have equal
+degrees.
+
+Let us try to prove that every graph with two or more nodes have unique
+degrees.  We know that the set of possible degrees for a graph with $n$ vertices
+is:
+
+\[
+0,1,\ldots,n-1
+\]
+
+This gives us a total of $n$ unique degrees to assign to our $n$ vertices. We
+must assign a degree of zero to one vertex. A vertex with degree zero is
+connected to no other vertices.  Let us now assign the degree $n-1$ to a
+vertice.  This vertice is connected to every other vertice in the graph.
+This is a contradiction, because it is impossible to simulatenously have a
+vertice that is connected to every other vertice, and a vertice that is
+connected to none.  Therefore, there are at least two vertices with the same
+degree in any graph with at least 2 vertices.
+\end{enumerate}
+\end{document}
