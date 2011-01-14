@@ -14,3 +14,11 @@ to use Git at this point, or you can copy the files elsewhere and use them.
 You can download the raw files by navigating the web folders you see here.  You
 can copy/paste the contents of the file, or download the file directly by
 selecting "raw". I highly reccomend using git, however.
+
+# I would like to contribute an example
+
+I would love more examples.  Fork this repository (preferably by signing up for
+github and forking it that way), add your examples and send me a pull request.
+If you are opposed to that idea, I'll take git patches as well.
+
+Before submitting your examples, please take a moment to add a header comment (like the ones I've added) and any other notes that you think would be helpful
