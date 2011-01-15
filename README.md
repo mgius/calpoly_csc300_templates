@@ -11,9 +11,10 @@ to use Git at this point, or you can copy the files elsewhere and use them.
 
 ## But I don't have / want Git
 
-You can download the raw files by navigating the web folders you see here.  You
-can copy/paste the contents of the file, or download the file directly by
-selecting "raw". I highly reccomend using git, however.
+You can download a zip or tarball of this project with the downloads link
+above. If you want specific files or folders you can acquire them by navigating the 
+project folders on this site and copy/pasting the contents of the file.  You can 
+also download the file directly by selecting "raw".
 
 # I would like to contribute an example
 
