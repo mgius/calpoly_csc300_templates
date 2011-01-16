@@ -1,80 +1,62 @@
 # Make File for creating Tex documents in Linux with bibliographies in the .bib form.
-# Taken from Mark Gius who took it from Phil Nico
+# Made by Nat Welch
 #
-# Targets of interest:
+# Targets:
 #
 #   ps       --- builds the postscript version of the document
 #   pdf      --- builds the pdf version of the document
 #   all      --- builds both the pdf and ps versions of the document
-#   pspre    --- builds the postscript version of the document and starts
-#          	 ghostview to look at it
-#   pdfpre   --- builds the pdf version of the document and starts acroread
-#          	 to view it
-#   clean    --- cleans up intermediate files
-#   allclean --- cleans up everything that can be regenerated
+#   clean --- cleans up everything that can be regenerated
 
+# Your Shell
+SH        = /bin/bash
 
-SHELL     = /bin/bash
-MAIN      = texreport
+# Your Tex files
 TEXFILES  = texreport.tex
-BIBFILES  = texreport
+
+# Your Bib files
+BIBFILES  = texreport.bib
+
+# The name of your compiled files (x.pdf and x.ps)
+NAME      = texreport
+
+# The location of your tex compiler
 LATEX     = latex
+BIBTEX    = bibtex
 PS        = dvips
+
+# Compile flags
 PSFLAGS   = -f -t letter -Ppdf
-PSPFLAGS  = -geometry +10+10 -watch
-PSVIEWER  = gv
-PDFVIEWER = acroread
-PDFPFLAGS = -geometry +10+10
-EXTRACLEAN= *.bbl *.blg *.toc
 
+# Begin target definitions
+all: ps pdf smallclean
 
-.PHONY: all ps pdf pre pspre print clean
+ps: $(NAME).ps
 
-all:    ps pdf
-
-ps:     $(MAIN).ps
-
-pdf:    $(MAIN).pdf
-
-pre:    pspre
-
-pspre:  $(MAIN).ps
-	$(PSVIEWER) $(PSPFLAGS) $(MAIN).ps &
-
-pdfpre: $(MAIN).pdf
-	$(PDFVIEWER) $(PDFPFLAGS) $(MAIN).pdf &
-
-print: $(MAIN).ps
-	lpr -h $(MAIN).ps
-
-%.dvi:  %.tex $(TEXFILES)
-
-ifdef BIBFILES
-	@echo "  Running LaTeX"
-	$(LATEX) $<
-	@echo "  Running BibTeX"
-	bibtex $(BIBFILES)
-endif
-
-	@echo "	Running LaTeX until complete"
-	@if latex $< | tee /dev/tty | fgrep -is rerun; then 	\
-		echo "	Rerunning LaTeX";			\
-		while $(LATEX) $< | fgrep -is rerun; do    \
-			echo "  Re-Rerunning LaTeX";            \
-		done;                                           \
-	fi
+pdf: $(NAME).pdf
 
 %.ps: %.dvi
-	$(PS) $(PSFLAGS) $(MAIN).dvi > $(MAIN).ps
+	$(PS) $(PSFLAGS) $(NAME).dvi > $(NAME).ps
 
 %.pdf: %.ps
-	gs -q -sDEVICE=pdfwrite -sOutputFile=$@ -dNOPAUSE -dBATCH $<
+	@gs -q -sDEVICE=pdfwrite -sOutputFile=$@ -dNOPAUSE -dBATCH $<
 
-clean:
-	rm -f $(MAIN).dvi $(MAIN).log $(MAIN).aux *~ $(EXTRACLEAN)
+%.dvi: $(TEXFILES) $(BIBFILES)
+	@echo " --- Running LaTeX"
+	$(LATEX) $(TEXFILES)
+	@echo " --- Running BibTeX"
+	$(BIBTEX) $(NAME)
+	@echo "	Running LaTeX until complete"
+	if $(LATEX) $(TEXFILES) | tee /dev/tty | fgrep -is rerun; then \
+		@echo "	--- Rerunning LaTeX";				\
+		while $(LATEX) $(TEXFILES) | fgrep -is rerun; do	\
+			@echo "  Re-Rerunning LaTeX";			\
+		done;							\
+	fi
 
-allclean: clean
-	rm -f $(MAIN).ps $(MAIN).pdf
+smallclean:
+	rm -f $(NAME).dvi $(NAME).log $(NAME).aux *~ *.bbl *.blg *.toc
+	rm -f $(NAME).bbl $(NAME).blg $(NAME).synctex.gz
 
-bibclean: allclean
-	rm -f $(MAIN).bbl $(MAIN).blg $(MAIN).synctex.gz 
+clean: smallclean
+	rm -f $(NAME).ps $(NAME).pdf
