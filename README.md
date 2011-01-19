@@ -14,7 +14,9 @@ to use Git at this point, or you can copy the files elsewhere and use them.
 You can download a zip or tarball of this project with the downloads link
 above. If you want specific files or folders you can acquire them by navigating the 
 project folders on this site and copy/pasting the contents of the file.  You can 
-also download the file directly by selecting "raw".
+also download the file directly by selecting "raw".  Be VERY CAREFUL when doing
+this on makefiles, as tabbing and spacing is very important for the proper
+functioning of makefiles.
 
 # I would like to contribute an example
 
