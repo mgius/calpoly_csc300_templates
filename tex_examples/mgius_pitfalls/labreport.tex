@@ -10,8 +10,8 @@
 % That's about enough definitions
 
 \begin{document}
-\author{Your Name Here}
-\title{Lab 1: Security Audit}
+\author{CSC300 \LaTeX{} Repository}
+\title{\LaTeX{} Pitfalls}
 \maketitle
 
 \section{Text formatting}
@@ -20,21 +20,39 @@
 % See http://en.wikibooks.org/wiki/LaTeX/Formatting#Quotes for more info
 
 You cannot use \verb+"+ to achieve double quotes, you must use the left tick
-and the right tick instead.  
+and the right tick instead. \\
 
-\verb+This is a ``double quoted'' entry+
+\verb+This is a ``double quoted'' entry+ \\
 
-is converted to 
+is converted to  \\
 
-This is a ``double quoted'' entry.
+This is a ``double quoted'' entry. \\
 
-\verb+This is a `single quoted' entry+
+\verb+This is a `single quoted' entry+ \\
 
-is converted to
+is converted to \\
 
-This is a `single quoted' entry
+This is a `single quoted' entry \\
 
 This behavior is difficult to see in a compiled tex document, check out the 
 source.
+
+\section{underlining}
+
+Underlining is useful, but potentially dangerous. Underlining breaks TeX's ability to break lines apart properly.  Specifically, underlined text will not be broken at the appropriate points.  The text \\
+
+\verb+This \underline{incredibly stupidly long underlined segment will run off the end of the page because TeX cannot break it up}+ \\
+
+is converted to  \\
+
+This \underline{incredibly stupidly long underlined segment will run off the end of the page because TeX cannot break it up} \\
+
+The lesson to be learned here is that you should use \underline{Underlines} sparingly, and never more than a few words at a time unless you want to end up in line breaking hell. Consider \emph{emphasis} or \textbf{boldface} instead, as these do not break TeX's line breaking process.
+
+\subsection{Why is this the case?}
+
+I'm not a huge expert on this, but the basic idea is that under normal circumstands, TeX is able to use the length of words and other elements on the page to determine where to break sentences and insert newlines so that it looks nice.  When you use the underline environment, you effectively create one \emph{LONG} unbreakable segment of text.
+
+More detailed technical explanation welcome :D
 
 \end{document}
