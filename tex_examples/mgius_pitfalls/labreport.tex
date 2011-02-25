@@ -51,8 +51,36 @@ The lesson to be learned here is that you should use \underline{Underlines} spar
 
 \subsection{Why is this the case?}
 
-I'm not a huge expert on this, but the basic idea is that under normal circumstands, TeX is able to use the length of words and other elements on the page to determine where to break sentences and insert newlines so that it looks nice.  When you use the underline environment, you effectively create one \emph{LONG} unbreakable segment of text.
+I'm not a huge expert on this, but the basic idea is that under normal circumstances, TeX is able to use the length of words and other elements on the page to determine where to break sentences and insert newlines so that it looks nice.  When you use the underline environment, you effectively create one \emph{LONG} unbreakable segment of text.
 
 More detailed technical explanation welcome :D
+
+\section{Block Indenting}
+
+\begin{verbatim}
+{\addtolength{\leftskip}{6mm}
+
+   This section is block indented.  Handy for large quoted sections.
+
+}
+\end{verbatim}
+
+{\addtolength{\leftskip}{6mm}
+
+   This section is block indented.  Handy for large quoted sections.
+   This section is block indented.  Handy for large quoted sections.
+   This section is block indented.  Handy for large quoted sections.
+   This section is block indented.  Handy for large quoted sections.
+
+}
+
+\vspace{12pt}
+This section is not block indented.  As you can plainly see.
+This section is not block indented.  As you can plainly see.
+This section is not block indented.  As you can plainly see.
+This section is not block indented.  As you can plainly see.
+This section is not block indented.  As you can plainly see.
+This section is not block indented.  As you can plainly see.
+
 
 \end{document}
