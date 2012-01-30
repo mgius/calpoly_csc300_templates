@@ -4,7 +4,7 @@ Running
 Script has been tested on vogon, and should run on any system with perl. 
 If you are running Linux, you almost certainly have perl.
 
-$ perl myTexFilename.tex
+$ perl texcount.pl myTexFilename.tex
 
 Original README
 ===============
